@@ -2,11 +2,11 @@ from disciplina import Disciplina
 
 class Aluno:
 
-    def __init__(self, matricula = int, nome = str, id_semestre = int, lista_disciplinas = Disciplina):
+    def __init__(self, matricula = int, nome = str, id_semestre = int, lista_disciplinas = list):
         self.matricula = matricula
         self.nome = nome
         self.id_semestre = id_semestre
-        self.lista_disciplinas = Disciplina()
+        self.lista_disciplinas = lista_disciplinas
         
     def addDisciplina (Disciplina):
         pass
