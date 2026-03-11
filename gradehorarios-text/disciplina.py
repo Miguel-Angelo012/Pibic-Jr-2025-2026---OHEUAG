@@ -2,7 +2,7 @@ from aluno import addDisciplina
 
 class Disciplina:
     
-    def __init__(self, cod, semestre, nome, carga_horaria, pre_requisitos, professor, alunos, horarios, e_tecnica, sala):
+    def __init__(self, cod : str, semestre : str, nome : str, carga_horaria : int, pre_requisitos : list, professor : Professor, alunos : list, horarios : list, e_tecnica : bool, sala : Sala):
         self.cod = cod
         self.semestre = semestre
         self.nome = nome
