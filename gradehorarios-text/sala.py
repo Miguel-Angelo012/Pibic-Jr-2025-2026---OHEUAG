@@ -4,6 +4,3 @@ class Sala:
         self.num_sala = num_sala
         self.capacidade = capacidade
         self.laboratorio = laboratorio
-
-sala = Sala("a", "b", False)
-print(sala.laboratorio)
