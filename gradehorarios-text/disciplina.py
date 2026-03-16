@@ -4,7 +4,7 @@ from sala import Sala
 from semestre import Semestre
 
 class Disciplina:
-    
+
     def __init__(self, 
                  cod : str, 
                  semestre : int, 
@@ -25,20 +25,29 @@ class Disciplina:
         self.alunos = list()
         
     def addHorario(self, horarios : list):
-        self.horarios = horarios
-        print(f"Horários adicionados à disciplina {self.nome}")
+        self.horarios.append(horarios)
+        # print(f"Horários adicionados à disciplina {self.nome}")
 
     def addAluno(self, aluno : Aluno):
         self.alunos.append(aluno)
 
     def addProfessor(self, professor : Professor):
-        self.professor = professor
+        
+        
+        for item in professor.getHorarios_Bloqueados():
+            if self.horarios == item:
+                print("O professor não pode ser adicionado neste horário!")
+
+            else:
+                self.professor = professor
 
     def __repr__(self):
         # Isso aqui vai ser chamado quando tu fizer "print(nome_da_disciplina)"
         desc = f"""Disciplina: {self.nome} \n
         Professor: {self.professor.nome} \n
         Carga Horária: {self.carga_horaria}h \n
-        Horários: {self.horarios}"""
+        Horários: {self.horarios} \n
+        Sala: {self.sala.num_sala}"""
 
+        
         return desc

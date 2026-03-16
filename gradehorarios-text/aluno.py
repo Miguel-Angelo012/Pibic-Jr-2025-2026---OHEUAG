@@ -1,13 +1,19 @@
+from semestre import Semestre
+
 class Aluno:
 
-    def __init__(self, matricula = int, nome = str, id_semestre = int):
+    def __init__(self,
+                 matricula = int,
+                 nome = str,
+                 id_semestre = Semestre):
+
         self.matricula = matricula
         self.nome = nome
         self.id_semestre = id_semestre
         
-    def addDisciplina (Disciplina):
+    def addDisciplina ():
         pass
 
-    def remDisciplina (Disciplina):
+    def remDisciplina ():
         pass
 
