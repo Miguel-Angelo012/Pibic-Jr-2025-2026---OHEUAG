@@ -11,9 +11,7 @@ class Aluno:
         self.nome = nome
         self.id_semestre = id_semestre
         
-    def addDisciplina ():
-        pass
-
-    def remDisciplina ():
-        pass
+    def getDisciplina(self):
+        from disciplina import Disciplina
+        
 
