@@ -33,21 +33,20 @@ class Disciplina:
 
     def addProfessor(self, professor : Professor):
         
-        
         for item in professor.getHorarios_Bloqueados():
-            if self.horarios == item:
+            if item in self.horarios:
                 print("O professor não pode ser adicionado neste horário!")
+                return
 
-            else:
-                self.professor = professor
+        self.professor = professor
 
     def __repr__(self):
         # Isso aqui vai ser chamado quando tu fizer "print(nome_da_disciplina)"
+        
         desc = f"""Disciplina: {self.nome} \n
         Professor: {self.professor.nome} \n
         Carga Horária: {self.carga_horaria}h \n
         Horários: {self.horarios} \n
         Sala: {self.sala.num_sala}"""
-
         
         return desc
