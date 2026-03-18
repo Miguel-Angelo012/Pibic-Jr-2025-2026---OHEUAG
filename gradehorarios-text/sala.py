@@ -8,6 +8,3 @@ class Sala:
         self.num_sala = num_sala
         self.capacidade = capacidade
         self.laboratorio = laboratorio
-
-    def eLaboratorio(self, ):
-        pass
