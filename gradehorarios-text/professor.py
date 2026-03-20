@@ -10,7 +10,7 @@ class Professor:
         self.horarios_bloqueados = list()
         self.dias_concentrados = None
 
-    def setHorarios_Bloqueados(self, horarios_block):
+    def setHorarios_Bloqueados(self, horarios_block : tuple):
         self.horarios_bloqueados.append(horarios_block)
 
     def getHorarios_Bloqueados(self):
