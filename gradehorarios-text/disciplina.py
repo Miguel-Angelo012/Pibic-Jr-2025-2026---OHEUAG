@@ -1,7 +1,7 @@
-from aluno import Aluno
-from professor import Professor
-from sala import Sala
-from semestre import Semestre
+from Aluno import Aluno
+from Professor import Professor
+from Sala import Sala
+from Semestre import Semestre
 
 class Disciplina:
 
@@ -13,17 +13,17 @@ class Disciplina:
                  e_tecnica : bool):
         
         #Definidos por parâmetros
-        self.cod = cod
+        self.cod = cod.upper()
         self.semestre = semestre
-        self.nome = nome
+        self.nome = nome.capitalize()
         self.carga_horaria = carga_horaria
         self.e_tecnica = e_tecnica    
 
         #Definidos por função
-        self.horarios = list()        
+        self.horarios = list[tuple] = []
         self.pre_requisitos = list()
         self.professor = None
-        self.alunos = list()
+        self.alunos = list[Aluno] = []
         self.sala = None
         
 
