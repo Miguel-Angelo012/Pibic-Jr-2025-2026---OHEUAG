@@ -1,8 +1,8 @@
-from Disciplina import Disciplina
-from Aluno import Aluno
-from Professor import Professor
-from Sala import Sala
-from Semestre import Semestre
+from disciplina import Disciplina
+from aluno import Aluno
+from professor import Professor
+from sala import Sala
+from semestre import Semestre
 
 prof1 = Professor(1058981, "Thomaz Maia")
 prof1.setHorarios_Bloqueados( ("SEG", "M", "CD") )
