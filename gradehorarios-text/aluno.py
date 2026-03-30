@@ -1,4 +1,4 @@
-from Semestre import Semestre
+from semestre import Semestre
 
 class Aluno:
 
