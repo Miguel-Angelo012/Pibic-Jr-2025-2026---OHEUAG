@@ -1,7 +1,7 @@
-from Aluno import Aluno
-from Professor import Professor
-from Sala import Sala
-from Semestre import Semestre
+from aluno import Aluno
+from professor import Professor
+from sala import Sala
+from semestre import Semestre
 
 class Disciplina:
 
@@ -10,7 +10,8 @@ class Disciplina:
                  semestre : int, 
                  nome : str, 
                  carga_horaria : int, 
-                 e_tecnica : bool):
+                 e_tecnica : bool
+                 ):
         
         #Definidos por parâmetros
         self.cod = cod.upper()
@@ -20,10 +21,10 @@ class Disciplina:
         self.e_tecnica = e_tecnica    
 
         #Definidos por função
-        self.horarios = list[tuple] = []
+        self.horarios = list[tuple]()
         self.pre_requisitos = list()
         self.professor = None
-        self.alunos = list[Aluno] = []
+        self.alunos = list[Aluno]()
         self.sala = None
         
 
@@ -86,12 +87,5 @@ class Disciplina:
             sala_aux = self.sala.num_sala
 
         # Isso aqui vai ser chamado quando tu fizer "print(nome_da_disciplina)"
-        desc = f"""Disciplina: {self.nome} \n
-        Professor: {professor_aux} \n
-        Carga Horária: {self.carga_horaria}h \n
-        Horários: {horarios_aux} \n
-        Sala: {sala_aux} \n
-        Alunos: {alunos_aux} \n
-        """
         
-        return desc
+        return f"{self.nome}"
