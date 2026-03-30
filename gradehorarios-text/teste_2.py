@@ -1,9 +1,11 @@
-from Aluno import Aluno
-from Disciplina import Disciplina
-from Professor import Professor
-from Sala import Sala
-from Semestre import Semestre
-from Turma import Turma
+from aluno import Aluno
+from disciplina import Disciplina
+from professor import Professor
+from sala import Sala
+from semestre import Semestre
+from turma import Turma
+from horario import Horario
+from aula import Aula
 
 # No futuro: 
 # horario.grade["SEG"]["M"]["AB"] -> retorna um objeto do tipo Aula
@@ -28,10 +30,19 @@ mat1 = Disciplina("mat1", 1, "matemática 1", 40, False)
 pest = Disciplina("pest", 3, "programação estruturada", 80, True)
 fis1 = Disciplina("fis1", 1, "física 1", 40, False)
 
-alocacoes = [
-        (mat1, turma1),
-        (pest, turma2),
-        (fis1, turma1),
-    ]
+alocacoes = (mat1, turma1)
 
+aula1 = Aula(alocacoes, sala)
+print(aula1)
+
+aula2 = Aula((pest, turma2), sala_lab)
+print(aula2)
+
+#Horario
+grade_horarios = Horario(prof1, [aula1, aula2])
+
+
+
+print(grade_horarios.grade)
 #horario = horario
+
