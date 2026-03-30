@@ -1,9 +1,9 @@
-from Aluno import Aluno
-from Disciplina import Disciplina
-from Professor import Professor
-from Sala import Sala
-from Semestre import Semestre
-from Turma import Turma
+from aula import Aula
+from disciplina import Disciplina
+from professor import Professor
+from sala import Sala
+from turma import Turma
+import random
 
 DIAS = ["SEG", "TER", "QUA", "QUI", "SEX"]
 TURNOS = {
@@ -18,16 +18,16 @@ class Horario:
 # horario.grade["SEG"]["M"]["AB"].vazio() -> retorna True se o slot tiver livre    
 
     def __init__(self, 
-                 professor : Professor, 
-                 alocacoes : list[tuple[Disciplina, Turma]],
-                 salas : list[Sala]
+                professor: Professor, 
+                alocacoes: list[tuple[Disciplina, Turma]],
+                salas: list[Sala]
                  ):
         self.professor = professor
-        self.alocacores = alocacoes
+        self.alocacoes = alocacoes
         self.salas = salas
 
-        self.inicializar_grade()
-
+        self.grade = self.inicializar_grade()
+        
     def inicializar_grade(self):
         grade = {}
 
