@@ -2,7 +2,8 @@ class Professor:
 
     def __init__(self,
                  matricula : int,
-                 nome : str):
+                 nome : str
+                 ):
                  
         self.matricula = matricula
         self.nome = nome
@@ -30,3 +31,5 @@ class Professor:
     def getDias_concentrados(self):
         return self.dias_concentrados
     
+    def __repr__(self):
+        return f"{self.nome}"
