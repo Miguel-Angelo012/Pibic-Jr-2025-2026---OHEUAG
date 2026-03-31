@@ -44,26 +44,23 @@ class Horario:
 
         return grade
     
-    def gerar_individuo(self):
-        # cria lista de aulas
-        aulas = [
-            Aula(alocacao=aloc, sala=random.choice(self.salas))
-            for aloc in self.alocacoes
-        ]
+    def gerar_individuo_aleatorio(self):
+        todas_alocacoes = self.alocacoes.copy()
+        random.shuffle(todas_alocacoes)
 
-        # embaralha
-        random.shuffle(aulas)
+        todos_slots = []
 
-        i = 0
         for dia in DIAS:
             for turno in TURNOS:
                 for slot in TURNOS[turno]:
-                    
-                    if i < len(aulas):
-                        self.grade[dia][turno][slot] = aulas[i]
-                        i += 1
-                    else:
-                        self.grade[dia][turno][slot] = Aula()  # vazio
+                    todos_slots.append((dia, turno, slot))
+
+        #  embaralha os slots
+        random.shuffle(todos_slots)
+
+        for alocacao, (dia, turno, slot) in zip(todas_alocacoes, todos_slots):
+            sala = random.choice(self.salas)
+            self.grade[dia][turno][slot] = Aula(alocacao, sala)
 
 sala = Sala(5, 30, False)
 sala_lab = Sala(3, 30, True)
@@ -93,7 +90,6 @@ alocacoes = [
 ]
 
 grade = Horario(prof1, alocacoes, [sala, sala_lab])
-grade.gerar_individuo()
-print(sala)
-print(aula1)
+grade.gerar_individuo_aleatorio()
 print(grade.grade)
+
