@@ -41,3 +41,21 @@ class Horario:
                     grade[dia][turno][slot] = None #Aula(Disciplina, Turma, Sala)
 
         return grade
+    
+    def gerar_individuo_aleatorio(self):
+        todas_alocacoes = self.alocacoes.copy()
+        random.shuffle(todas_alocacoes)
+
+        todos_slots = []
+
+        for dia in DIAS:
+            for turno in TURNOS:
+                for slot in TURNOS[turno]:
+                    todos_slots.append((dia, turno, slot))
+
+        #  embaralha os slots
+        random.shuffle(todos_slots)
+
+        for alocacao, (dia, turno, slot) in zip(todas_alocacoes, todos_slots):
+            sala = random.choice(self.salas)
+            self.grade[dia][turno][slot] = Aula(alocacao, sala)
