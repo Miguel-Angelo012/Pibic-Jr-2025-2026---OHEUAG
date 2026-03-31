@@ -30,19 +30,21 @@ mat1 = Disciplina("mat1", 1, "matemática 1", 40, False)
 pest = Disciplina("pest", 3, "programação estruturada", 80, True)
 fis1 = Disciplina("fis1", 1, "física 1", 40, False)
 
-alocacoes = (mat1, turma1)
+alocacoes = [
+    (mat1, turma1),
+    (pest, turma2),
+    (fis1, turma1)
+]
 
-aula1 = Aula(alocacoes, sala)
-print(aula1)
+aula1 = Aula(alocacoes[0], sala)
+# print(aula1)
 
-aula2 = Aula((pest, turma2), sala_lab)
-print(aula2)
+aula2 = Aula(alocacoes[1], sala_lab)
+# print(aula2)
 
 #Horario
-grade_horarios = Horario(prof1, [aula1, aula2])
-
-
-
-print(grade_horarios.grade)
+grade_horarios1 = Horario(prof1, alocacoes, [sala, sala_lab])
+grade_horarios1.gerar_individuo_aleatorio()
+print(grade_horarios1.grade)
 #horario = horario
 
