@@ -6,19 +6,17 @@ from typing import Tuple
 class Aula:
 
     def __init__(self,
-                 alocacao = Tuple[Disciplina, Turma],
+                 alocacao = tuple[Disciplina, Turma],
                  sala = Sala
                  ):
         
-        self.alocacao = alocacao
+        self.disciplina = alocacao[0]
+        self.turma = alocacao[1]
         self.sala = sala
 
     def __repr__(self):
 
-        aula = f"""
-        Disciplina: {self.alocacao[0]}\n
-        Turma: {self.alocacao[1]}
-        Sala: {self.sala}
-        """
-        
-        return aula
+        return f"""
+                {self.disciplina}\n
+                {self.turma}\n
+                {self.sala}\n"""
