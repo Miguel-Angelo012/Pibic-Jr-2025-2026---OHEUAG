@@ -1,8 +1,8 @@
-from aula import Aula
-from disciplina import Disciplina
-from professor import Professor
-from sala import Sala
-from turma import Turma
+from Aula import Aula
+from Disciplina import Disciplina
+from Professor import Professor
+from Sala import Sala
+from Turma import Turma
 import random
 
 DIAS = ["SEG", "TER", "QUA", "QUI", "SEX"]

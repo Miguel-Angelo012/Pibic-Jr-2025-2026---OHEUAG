@@ -1,6 +1,6 @@
-from disciplina import Disciplina
-from turma import Turma
-from sala import Sala
+from Disciplina import Disciplina
+from Turma import Turma
+from Sala import Sala
 from typing import Tuple
 
 class Aula:

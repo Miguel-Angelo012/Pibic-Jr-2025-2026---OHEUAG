@@ -1,10 +1,10 @@
-from aula import Aula
-from professor import Professor
-from aluno import Aluno
-from disciplina import Disciplina
-from sala import Sala
-from semestre import Semestre
-from turma import Turma
+from Aula import Aula
+from Professor import Professor
+from Aluno import Aluno
+from Disciplina import Disciplina
+from Sala import Sala
+from Semestre import Semestre
+from Turma import Turma
 import random
 
 DIAS = ["SEG", "TER", "QUA", "QUI", "SEX"]

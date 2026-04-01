@@ -1,11 +1,11 @@
-from aluno import Aluno
-from disciplina import Disciplina
-from professor import Professor
-from sala import Sala
-from semestre import Semestre
-from turma import Turma
-from horario import Horario
-from aula import Aula
+from Aluno import Aluno
+from Disciplina import Disciplina
+from Professor import Professor
+from Sala import Sala
+from Semestre import Semestre
+from Turma import Turma
+from Horario import Horario
+from Aula import Aula
 
 # No futuro: 
 # horario.grade["SEG"]["M"]["AB"] -> retorna um objeto do tipo Aula

@@ -1,7 +1,7 @@
-from aluno import Aluno
-from professor import Professor
-from sala import Sala
-from semestre import Semestre
+from Aluno import Aluno
+from Professor import Professor
+from Sala import Sala
+from Semestre import Semestre
 
 class Disciplina:
 
