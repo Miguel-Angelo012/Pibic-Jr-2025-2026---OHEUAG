@@ -19,8 +19,8 @@ class Horario:
 
     def __init__(self, 
                 professor: Professor, 
-                alocacoes: list[tuple[Disciplina, Turma]],
-                salas: list[Sala]
+                alocacoes: list,
+                salas: list
                  ):
         self.professor = professor
         self.alocacoes = alocacoes
@@ -38,7 +38,7 @@ class Horario:
                 grade[dia][turno] = {}
 
                 for slot in TURNOS[turno]:
-                    grade[dia][turno][slot] = None #Aula(Disciplina, Turma, Sala)
+                    grade[dia][turno][slot] = None
 
         return grade
     
@@ -46,16 +46,66 @@ class Horario:
         todas_alocacoes = self.alocacoes.copy()
         random.shuffle(todas_alocacoes)
 
-        todos_slots = []
+        # Monta lista apenas com slots NAO bloqueados pelo professor
+        bloqueados = self.professor.getHorarios_Bloqueados()
+        slots_disponiveis = []
 
         for dia in DIAS:
             for turno in TURNOS:
                 for slot in TURNOS[turno]:
-                    todos_slots.append((dia, turno, slot))
+                    if (dia, turno, slot) not in bloqueados:
+                        slots_disponiveis.append((dia, turno, slot))
 
         #  embaralha os slots
-        random.shuffle(todos_slots)
+        random.shuffle(slots_disponiveis)
 
-        for alocacao, (dia, turno, slot) in zip(todas_alocacoes, todos_slots):
-            sala = random.choice(self.salas)
+        # Aloca cada alocacao em um slot disponivel
+        for i in range(len(todas_alocacoes)):
+            if i >= len(slots_disponiveis):
+                print("Aviso: slots insuficientes para todas as alocacoes.")
+                break
+ 
+            alocacao = todas_alocacoes[i]
+            dia, turno, slot = slots_disponiveis[i]
+            disciplina = alocacao[0]
+ 
+            # Filtra salas compativeis com o tipo da disciplina (lab ou nao)
+            salas_compativeis = []
+            for sala in self.salas:
+                if sala.laboratorio == disciplina.e_tecnica:
+                    salas_compativeis.append(sala)
+ 
+            if len(salas_compativeis) == 0:
+                print(f"Aviso: nenhuma sala compativel para {disciplina.nome}.")
+                continue
+ 
+            sala = random.choice(salas_compativeis)
             self.grade[dia][turno][slot] = Aula(alocacao, sala)
+
+    def __repr__(self):
+        # Cabecalho
+        resultado = "\nGrade — Prof. " + self.professor.nome + "\n"
+        resultado = resultado + f"{'':>8}"
+        for dia in DIAS:
+            resultado = resultado + f"{dia:^22}"
+        resultado = resultado + "\n"
+ 
+        # Linhas por turno e slot
+        for turno in TURNOS:
+            for slot in TURNOS[turno]:
+                rotulo = turno + "-" + slot
+                resultado = resultado + f"{rotulo:>8}"
+ 
+                for dia in DIAS:
+                    aula = self.grade[dia][turno][slot]
+                    if aula is None:
+                        celula = "—"
+                    else:
+                        celula = aula.disciplina.cod + "/" + aula.turma.cod
+                    resultado = resultado + f"{celula:^22}"
+ 
+                resultado = resultado + "\n"
+ 
+            resultado = resultado + "\n"
+ 
+        return resultado

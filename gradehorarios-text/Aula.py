@@ -1,22 +1,21 @@
 from Disciplina import Disciplina
 from Turma import Turma
 from Sala import Sala
-from typing import Tuple
 
 class Aula:
 
     def __init__(self,
-                 alocacao = tuple[Disciplina, Turma],
+                 alocacao = tuple, 
                  sala = Sala
                  ):
         
+        # alocacao -> tuple[Disciplina, Turma]
         self.disciplina = alocacao[0]
         self.turma = alocacao[1]
         self.sala = sala
 
-    def __repr__(self):
+    def vazio(self):
+            return self.disciplina is None        
 
-        return f"""
-                {self.disciplina}\n
-                {self.turma}\n
-                {self.sala}\n"""
+    def __repr__(self):
+        return f"{self.disciplina} | {self.turma} | {self.sala}"

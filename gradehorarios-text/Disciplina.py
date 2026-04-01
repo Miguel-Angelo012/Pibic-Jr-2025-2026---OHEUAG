@@ -21,10 +21,10 @@ class Disciplina:
         self.e_tecnica = e_tecnica    
 
         #Definidos por função
-        self.horarios = list[tuple]()
+        self.horarios = list()
         self.pre_requisitos = list()
         self.professor = None
-        self.alunos = list[Aluno]()
+        self.alunos = list()
         self.sala = None
         
 

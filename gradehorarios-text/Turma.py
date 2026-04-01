@@ -7,7 +7,7 @@ class Turma:
                  ):
         self.cod = cod
         self.turno = turno
-        self.alunos = list[Aluno]()
+        self.alunos = list()
 
     def addAluno(self, aluno : Aluno):
         self.alunos.append(aluno)
