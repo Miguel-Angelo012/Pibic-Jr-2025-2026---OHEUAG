@@ -81,7 +81,18 @@ class Horario:
  
             sala = random.choice(salas_compativeis)
             self.grade[dia][turno][slot] = Aula(alocacao, sala)
-
+    
+    def horario_grade(self, dia, turno, slot):
+        
+        aula = self.grade[dia][turno][slot]
+        if aula is None:
+            print("Slot vazio")
+        else:
+            if aula.sala.laboratorio == True:
+                print(f"Matéria: {aula.disciplina.nome}\nTurma: {aula.turma.cod}\nLaboratório: {aula.sala.num_sala}")
+            else:
+                print(f"Matéria: {aula.disciplina.nome}\nTurma: {aula.turma.cod}\nSala: {aula.sala.num_sala}")
+    
     def __repr__(self):
         # Cabecalho
         resultado = "\nGrade — Prof. " + self.professor.nome + "\n"
