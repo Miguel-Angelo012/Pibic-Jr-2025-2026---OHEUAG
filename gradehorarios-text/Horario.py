@@ -61,28 +61,43 @@ class Horario:
 
         # Aloca cada alocacao em um slot disponivel
         for i in range(len(todas_alocacoes)):
+
+
             if i >= len(slots_disponiveis):
-                print("Aviso: slots insuficientes para todas as alocacoes.")
+                print(f"Aviso: slots do professor {self.professor} insuficientes para todas as alocacoes.")
                 break
  
             alocacao = todas_alocacoes[i]
             dia, turno, slot = slots_disponiveis[i]
             disciplina = alocacao[0]
- 
+
+            # Verifica se a disciplina já possui um professor atribuido
+            if disciplina.professor is not None: 
+                print(f"A disciplina {disciplina}, já possui um professor")
+                continue
+
             # Filtra salas compativeis com o tipo da disciplina (lab ou nao)
             salas_compativeis = []
             for sala in self.salas:
+                
+                # Verifica se a sala já está ocupada naquele horário
+                if sala.esta_ocupada(dia, turno, slot):
+                    print(f"Sala {sala} já está ocupada")
+                    continue
+
                 if sala.laboratorio == disciplina.e_tecnica:
                     salas_compativeis.append(sala)
  
             if len(salas_compativeis) == 0:
                 print(f"Aviso: nenhuma sala compativel para {disciplina.nome}.")
                 continue
- 
+
             sala = random.choice(salas_compativeis)
             self.grade[dia][turno][slot] = Aula(alocacao, sala)
+            disciplina.addProfessor(self.professor) # Atribuiu o professor a disciplina
+            sala.ocupar(dia, turno, slot) # Ocupa aquela sala naquele horário
     
-    def horario_grade(self, dia, turno, slot):
+    def horario_grade(self, dia, turno, slot):  # retorna um objeto do tipo Aula
         
         aula = self.grade[dia][turno][slot]
         if aula is None:
