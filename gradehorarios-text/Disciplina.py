@@ -1,7 +1,6 @@
 from Aluno import Aluno
 from Professor import Professor
 from Sala import Sala
-from Semestre import Semestre
 
 class Disciplina:
 
@@ -53,7 +52,7 @@ class Disciplina:
 
         self.professor = professor
 
-        print(f"Professor {self.professor.nome} adicionado à disciplina {self.nome}")
+        # print(f"Professor {self.professor.nome} adicionado à disciplina {self.nome}")
 
 
     def addSala(self, sala : Sala):
