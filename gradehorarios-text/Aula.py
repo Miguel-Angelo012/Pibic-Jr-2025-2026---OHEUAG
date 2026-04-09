@@ -5,8 +5,8 @@ from Sala import Sala
 class Aula:
 
     def __init__(self,
-                 alocacao = tuple, 
-                 sala = Sala
+                 alocacao : tuple, 
+                 sala : Sala
                  ):
         
         # alocacao -> tuple[Disciplina, Turma]

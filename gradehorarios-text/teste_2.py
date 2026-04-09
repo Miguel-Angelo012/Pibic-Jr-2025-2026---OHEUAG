@@ -45,6 +45,6 @@ aula2 = Aula(alocacoes[1], sala_lab)
 #Horario
 grade_horarios1 = Horario(prof1, alocacoes, [sala, sala_lab])
 grade_horarios1.gerar_individuo_aleatorio()
-print(grade_horarios1.grade)
+print(grade_horarios1)
 #horario = horario
 
