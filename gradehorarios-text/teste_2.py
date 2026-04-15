@@ -7,6 +7,7 @@ from Turma import Turma
 from Horario import Horario
 from Aula import Aula
 
+# Alguma coisa
 # No futuro: 
 # horario.grade["SEG"]["M"]["AB"] -> retorna um objeto do tipo Aula
 # horario.grade["SEG"]["M"]["AB"].turma -> retorna um objeto Turma
