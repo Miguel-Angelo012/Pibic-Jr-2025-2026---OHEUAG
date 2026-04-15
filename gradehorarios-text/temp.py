@@ -20,8 +20,8 @@ class Horario:
 
     def __init__(self, 
                 professor: Professor, 
-                alocacoes: list[tuple[Disciplina, Turma]],
-                salas: list[Sala]
+                alocacoes: list,
+                salas: list
                 ):
         
         self.professor = professor
