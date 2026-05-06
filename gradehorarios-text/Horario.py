@@ -52,6 +52,10 @@ class Horario:
         todas_alocacoes = self.alocacoes.copy()
         random.shuffle(todas_alocacoes)
 
+        # Limpa a ocupacao das salas antes de gerar, evitando que slots ocupados num individuo anterior bloqueiem este.
+        for sala in self.salas:
+            sala.limpar_ocupacao()
+
         # Monta lista apenas com slots NAO bloqueados pelo professor
         bloqueados = self.professor.getHorarios_Bloqueados()
         slots_disponiveis = []
@@ -67,8 +71,6 @@ class Horario:
 
         # Aloca cada alocacao em um slot disponivel
         for i in range(len(todas_alocacoes)):
-
-
             if i >= len(slots_disponiveis):
                 print(f"Aviso: slots do professor {self.professor} insuficientes para todas as alocacoes.")
                 break
@@ -99,7 +101,6 @@ class Horario:
 
             sala = random.choice(salas_compativeis)
             self.grade[dia][turno][slot] = Aula(alocacao, sala)
-            disciplina.addProfessor(self.professor) # Atribuiu o professor a disciplina
             sala.ocupar(dia, turno, slot) # Ocupa aquela sala naquele horário
     
     def funcao_fitness(self):

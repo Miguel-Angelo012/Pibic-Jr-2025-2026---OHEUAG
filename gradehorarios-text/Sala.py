@@ -17,5 +17,10 @@ class Sala:
     def ocupar(self, dia, turno, slot):
         self.ocupacao[(dia, turno, slot)] = True
 
+    def limpar_ocupacao(self):
+        # Deve ser chamado antes de gerar cada novo individuo,
+        # para que a ocupacao de uma grade nao contamine a proxima.
+        self.ocupacao = {}
+
     def __repr__(self):
         return f"Sala {self.num_sala}"
