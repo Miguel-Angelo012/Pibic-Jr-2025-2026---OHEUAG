@@ -16,10 +16,11 @@ salas = [
 
 # Professores
 prof1 = Professor(1058981, "Thomaz Maia")
-prof1.setHorarios_Bloqueados(("SEG", "M", "AB"))
-prof1.setHorarios_Bloqueados(("SEG", "M", "CD"))
-prof1.setHorarios_Bloqueados(("SEG", "T", "AB"))
-prof1.setHorarios_Bloqueados(("SEG", "T", "CD"))
+prof1.setHorarios_Bloqueados(("SEX", "M", "AB"))
+prof1.setHorarios_Bloqueados(("SEX", "M", "CD"))
+prof1.setHorarios_Bloqueados(("SEX", "T", "AB"))
+prof1.setHorarios_Bloqueados(("SEX", "T", "CD"))
+prof1.setDias_concentrados(True)
 
 prof2 = Professor(1058982, "Maria Silva")
 prof2.setHorarios_Bloqueados(("TER", "N", "AB"))
@@ -35,11 +36,13 @@ prof4.setHorarios_Bloqueados(("TER", "M", "AB"))
 prof4.setHorarios_Bloqueados(("QUI", "N", "CD"))
 prof4.setHorarios_Bloqueados(("SEX", "T", "AB"))
 prof4.setHorarios_Bloqueados(("SEX", "N", "CD"))
+prof4.setDias_concentrados(True)
 
 prof5 = Professor(1058985, "Luiz Santos")
 prof5.setHorarios_Bloqueados(("SEG", "N", "AB"))
 prof5.setHorarios_Bloqueados(("TER", "T", "CD"))
 prof5.setHorarios_Bloqueados(("QUA", "M", "AB"))
+prof5.setDias_concentrados(True)
 
 # Turmas
 turma1 = Turma("S1A", "M")

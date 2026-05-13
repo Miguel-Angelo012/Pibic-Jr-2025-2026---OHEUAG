@@ -15,7 +15,6 @@ TURNOS = {
 # Restrições rígidas que faltam:
 # 5. O horário do professor deve ser alocado concentrado ou não, conforme sua escolha dentro dos 4 dias restantes;
 # 7. O horário de cada professor deve começar com pelo menos 20h livres;
-# 8. O horário também deve atender disciplinas a serem eu cursadas por alunos concludentes;
 # 10. As aulas de uma turma devem ficar concentradas numa mesma sala de aula;
 
 class Horario:
@@ -99,6 +98,10 @@ class Horario:
             if self.check_aulas_no_dia(dia) >= 6:
                 continue
 
+            if self.professor.getDias_concentrados():
+                if not self.check_dias_concentrados(dia):
+                    continue
+
             sala = random.choice(salas_compativeis)
             self.grade[dia][turno][slot] = Aula(alocacao, sala)
             sala.ocupar(dia, turno, slot) # Ocupa aquela sala naquele horário
@@ -126,6 +129,44 @@ class Horario:
                 print(f"Matéria: {aula.disciplina.nome}\nTurma: {aula.turma.cod}\nSala: {aula.sala.num_sala}\n")
     
     # Funções Auxiliares:
+
+    def get_indices_dias_utilizados(self):
+        dias_utilizados = set()
+
+        for i, dia in enumerate(DIAS):
+
+            for turno in TURNOS:
+                for slot in TURNOS[turno]:
+
+                    if self.grade[dia][turno][slot] is not None:
+                        dias_utilizados.add(i)
+
+        return sorted(dias_utilizados)
+    
+    def check_dias_concentrados(self, dia):
+    
+        dias_utilizados = self.get_indices_dias_utilizados()
+
+        # ainda não tem aulas
+        if len(dias_utilizados) == 0:
+            return True
+
+        indice_novo = DIAS.index(dia)
+
+        # adiciona o novo dia temporariamente
+        todos = dias_utilizados + [indice_novo]
+        todos = sorted(set(todos))
+
+        # verifica buracos
+        for i in range(len(todos) - 1):
+
+            diferenca = todos[i + 1] - todos[i]
+
+            # se houver buraco entre dias
+            if diferenca > 1:
+                return False
+
+        return True
 
     def check_salas(self, dia, turno, slot, disciplina):
         salas_compativeis = []
