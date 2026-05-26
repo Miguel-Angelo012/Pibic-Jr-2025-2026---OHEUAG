@@ -12,6 +12,12 @@ salas = [
     Sala(3, 30, True),
     Sala(4, 30, True),
     Sala(8, 30, True),
+    Sala(9, 30, True),
+    Sala(10, 30, True),
+    Sala(4, 30, False),
+    Sala(3, 30, False),
+    Sala(2, 30, False),
+    Sala(1, 30, False),
 ]
 
 # Professores
@@ -20,6 +26,8 @@ prof1.setHorarios_Bloqueados(("SEX", "M", "AB"))
 prof1.setHorarios_Bloqueados(("SEX", "M", "CD"))
 prof1.setHorarios_Bloqueados(("SEX", "T", "AB"))
 prof1.setHorarios_Bloqueados(("SEX", "T", "CD"))
+prof1.setHorarios_Bloqueados(("SEX", "N", "AB"))
+prof1.setHorarios_Bloqueados(("SEX", "N", "CD"))
 prof1.setDias_concentrados(True)
 
 prof2 = Professor(1058982, "Maria Silva")
@@ -42,7 +50,7 @@ prof5 = Professor(1058985, "Luiz Santos")
 prof5.setHorarios_Bloqueados(("SEG", "N", "AB"))
 prof5.setHorarios_Bloqueados(("TER", "T", "CD"))
 prof5.setHorarios_Bloqueados(("QUA", "M", "AB"))
-prof5.setDias_concentrados(True)
+prof5.setDias_concentrados(False)
 
 # Turmas
 turma1 = Turma("S1A", "M")

@@ -11,11 +11,10 @@ TURNOS = {
     "T" : ["AB", "CD"],
     "N" : ["AB", "CD"],
 }
- 
 # Restrições rígidas que faltam:
 # 5. O horário do professor deve ser alocado concentrado ou não, conforme sua escolha dentro dos 4 dias restantes;
 # 7. O horário de cada professor deve começar com pelo menos 20h livres;
-# 10. As aulas de uma turma devem ficar concentradas numa mesma sala de aula;
+
 
 class Horario:
 # horario.grade["SEG"]["M"]["AB"] -> retorna um objeto do tipo Aula
@@ -32,7 +31,7 @@ class Horario:
         self.salas = salas
 
         self.grade = self.inicializar_grade()
-        
+
     def inicializar_grade(self):
         grade = {}
 
@@ -49,7 +48,9 @@ class Horario:
     
     def gerar_individuo_aleatorio(self):
         todas_alocacoes = self.alocacoes.copy()
+        horas_restantes = self.professor.getHoras_restantes()
         random.shuffle(todas_alocacoes)
+        
 
         # Limpa a ocupacao das salas antes de gerar, evitando que slots ocupados num individuo anterior bloqueiem este.
         for sala in self.salas:
@@ -64,47 +65,57 @@ class Horario:
                 for slot in TURNOS[turno]:
                     if (dia, turno, slot) not in bloqueados:
                         slots_disponiveis.append((dia, turno, slot))
+                    else:
+                        horas_restantes -= 2
 
         #  embaralha os slots
         random.shuffle(slots_disponiveis)
 
         # Aloca cada alocacao em um slot disponivel
-        for i in range(len(todas_alocacoes)):
-            if i >= len(slots_disponiveis):
-                print(f"Aviso: slots do professor {self.professor} insuficientes para todas as alocacoes.")
-                break
- 
-            alocacao = todas_alocacoes[i]
-            dia, turno, slot = slots_disponiveis[i]
+        for alocacao in todas_alocacoes:
+
             disciplina = alocacao[0]
+            alocado = False
 
-            # Verifica se a disciplina já possui um professor atribuido
-            if disciplina.professor is not None: 
-                print(f"A disciplina {disciplina}, já possui um professor")
-                continue
+            for dia, turno, slot in slots_disponiveis:
 
-            # Filtra salas compativeis com o tipo da disciplina (lab ou nao)
-            salas_compativeis = self.check_salas(dia, turno, slot, disciplina)
-
-            if len(salas_compativeis) == 0:
-                continue
-            
-            # Verifica se ontem teve aula a noite para bloquear o slot M-AB 
-            dia_atual = DIAS.index(dia)
-            if self.check_noite_manha(dia_atual, turno, slot):
-                continue
-
-            # Verifica se o professor já possui 6 aulas no dia atual
-            if self.check_aulas_no_dia(dia) >= 6:
-                continue
-
-            if self.professor.getDias_concentrados():
-                if not self.check_dias_concentrados(dia):
+                # slot ocupado
+                if self.grade[dia][turno][slot] is not None:
                     continue
 
-            sala = random.choice(salas_compativeis)
-            self.grade[dia][turno][slot] = Aula(alocacao, sala)
-            sala.ocupar(dia, turno, slot) # Ocupa aquela sala naquele horário
+                # professor bloqueado
+                if (dia, turno, slot) in bloqueados:
+                    continue
+
+                # noite/manhã
+                dia_atual = DIAS.index(dia)
+                if self.check_noite_manha(dia_atual, turno, slot):
+                    continue
+
+                # limite de aulas
+                if self.check_aulas_no_dia(dia) >= 6:
+                    continue
+
+                # dias concentrados
+                if self.professor.getDias_concentrados():
+                    if not self.check_dias_concentrados(dia):
+                        continue
+
+                salas_compativeis = self.check_salas(dia, turno, slot, disciplina)
+
+                if len(salas_compativeis) == 0:
+                    continue
+
+                sala = random.choice(salas_compativeis)
+
+                self.grade[dia][turno][slot] = Aula(alocacao, sala)
+                sala.ocupar(dia, turno, slot)
+
+                alocado = True
+                break
+
+            if not alocado:
+                print(f"Nao foi possível alocar {disciplina.nome}")
     
     def funcao_fitness(self):
         pontuacao = 0
@@ -240,5 +251,5 @@ class Horario:
                 resultado = resultado + "\n"
  
             resultado = resultado + "\n"
- 
+
         return resultado
