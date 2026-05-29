@@ -12,7 +12,6 @@ TURNOS = {
     "N" : ["AB", "CD"],
 }
 # Restrições rígidas que faltam:
-# 5. O horário do professor deve ser alocado concentrado ou não, conforme sua escolha dentro dos 4 dias restantes;
 # 7. O horário de cada professor deve começar com pelo menos 20h livres;
 
 
@@ -29,6 +28,8 @@ class Horario:
         self.professor = professor
         self.alocacoes = alocacoes
         self.salas = salas
+
+        self.horario_valido = True
 
         self.grade = self.inicializar_grade()
 
@@ -47,10 +48,13 @@ class Horario:
         return grade
     
     def gerar_individuo_aleatorio(self):
+
+        if not self.check_horas_livres_minimas():
+            self.horario_valido = False
+            return
+
         todas_alocacoes = self.alocacoes.copy()
-        horas_restantes = self.professor.getHoras_restantes()
         random.shuffle(todas_alocacoes)
-        
 
         # Limpa a ocupacao das salas antes de gerar, evitando que slots ocupados num individuo anterior bloqueiem este.
         for sala in self.salas:
@@ -65,8 +69,6 @@ class Horario:
                 for slot in TURNOS[turno]:
                     if (dia, turno, slot) not in bloqueados:
                         slots_disponiveis.append((dia, turno, slot))
-                    else:
-                        horas_restantes -= 2
 
         #  embaralha os slots
         random.shuffle(slots_disponiveis)
@@ -118,15 +120,99 @@ class Horario:
                 print(f"Nao foi possível alocar {disciplina.nome}")
     
     def funcao_fitness(self):
+        
         pontuacao = 0
         
-        for aula in self.grade:
-            pass
-        # for dia in DIAS:
-        #     for turno in TURNOS:
-        #         for slot in TURNOS[turno]:
+        if not self.bool_limite_aulas():
+            pontuacao += 10
+
+        if not self.bool_check_noite_manha():
+            pontuacao += 10
+
+        if not self.bool_check_dias_livres():
+            pontuacao += 10
+
+        if not self.bool_dias_concentrados():   
+            pontuacao += 10
+
+        print(pontuacao)
+    
+    # Funções Booleanas para Fitness Funtion
                     
-        #             if 
+    def bool_check_dias_livres(self): # RR 4
+
+        bloqueados = self.professor.getHorarios_Bloqueados()
+
+        for dia, turno, slot in bloqueados:
+
+            if self.grade[dia][turno][slot] is not None:
+                return False
+
+        return True
+    
+    def bool_dias_concentrados(self): # RR 5
+
+        if not self.professor.getDias_concentrados():
+            return True
+
+        dias_utilizados = self.get_indices_dias_utilizados()
+
+        for i in range(len(dias_utilizados) - 1):
+
+            if dias_utilizados[i + 1] - dias_utilizados[i] > 1:
+                return False
+
+        return True
+    
+    def bool_check_turnos_bloqueados(self): # RR 6
+
+        bloqueados = self.professor.getHorarios_Bloqueados()
+
+        for dia, turno, slot in bloqueados:
+
+            if self.grade[dia][turno][slot] is not None:
+                return False
+
+        return True
+    
+    def bool_limite_aulas(self): # RR 10
+
+        for dia in DIAS:
+
+            if self.check_aulas_no_dia(dia) > 6:
+                return False
+
+        return True
+    
+    def bool_check_noite_manha(self): # RR 11
+        for dia in DIAS:
+            for turno in TURNOS:
+                for slot in TURNOS[turno]:
+        
+                    dia_atual = DIAS.index(dia)
+                    
+                    if self.check_noite_manha(dia_atual, turno, slot):
+                        return False
+                    
+                return True
+
+    # Funções Auxiliares:
+
+    def check_horas_livres_minimas(self):
+
+        bloqueados = self.professor.getHorarios_Bloqueados()
+
+        slots_bloqueados = 0
+
+        for dia, turno, slot in bloqueados:
+
+            # conta apenas manhã e tarde
+            if turno in ["M", "T"]:
+                slots_bloqueados += 1
+
+        horas_livres = 40 - (slots_bloqueados * 2)
+
+        return horas_livres >= 20
 
     def horario_grade(self, dia, turno, slot):  # retorna um objeto do tipo Aula
         
@@ -138,8 +224,6 @@ class Horario:
                 print(f"Matéria: {aula.disciplina.nome}\nTurma: {aula.turma.cod}\nLaboratório: {aula.sala.num_sala}\n")
             else:
                 print(f"Matéria: {aula.disciplina.nome}\nTurma: {aula.turma.cod}\nSala: {aula.sala.num_sala}\n")
-    
-    # Funções Auxiliares:
 
     def get_indices_dias_utilizados(self):
         dias_utilizados = set()
@@ -227,6 +311,10 @@ class Horario:
         return total
     
     def __repr__(self):
+
+        if self.horario_valido == False:
+            return f"O professor {self.professor} não possui o número mínimo de horários livres!"
+        
         # Cabecalho
         resultado = "\nGrade — Prof. " + self.professor.nome + "\n"
         resultado = resultado + f"{'':>8}"
