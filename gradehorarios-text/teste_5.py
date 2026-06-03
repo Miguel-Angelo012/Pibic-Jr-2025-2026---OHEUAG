@@ -157,10 +157,16 @@ grade5 = Horario(prof5, alocacoes_prof5, salas)
 grade5.gerar_individuo_aleatorio()
 
 print(grade1)
+grade1.funcao_fitness()
 print(grade2)
+grade2.funcao_fitness()
 print(grade3)
+grade3.funcao_fitness()
 print(grade4)
+grade4.funcao_fitness()
 print(grade5)
+grade5.funcao_fitness()
+
 
 # -------------------------------------------------------------------
 # Verifica se salas sao limpas corretamente entre individuos (Problema 4)

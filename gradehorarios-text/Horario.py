@@ -123,23 +123,52 @@ class Horario:
         
         pontuacao = 0
         
-        if not self.bool_limite_aulas():
+        # Restrições Rígidas:
+
+        if not self.rr4_check_dias_livres():
             pontuacao += 10
 
-        if not self.bool_check_noite_manha():
+        if not self.rr5_dias_concentrados():   
             pontuacao += 10
 
-        if not self.bool_check_dias_livres():
+        if not self.rr7_horas_livres():
             pontuacao += 10
 
-        if not self.bool_dias_concentrados():   
+        if not self.rr8_salas_ocupadas():
             pontuacao += 10
+
+        if not self.rr9_labs_tecnicos():
+            pontuacao += 10
+
+        if not self.rr10_limite_aulas():
+            pontuacao += 10
+
+        if not self.rr11_check_noite_manha():
+            pontuacao += 10
+
+        # Restrições Flexíveis:
+
+        pontuacao += self.rf1_quatro_aulas_seguidas() * 5
+
+        pontuacao += self.rf5_evitar_janelas() * 4
+
+        pontuacao += self.rf2_mesma_turma_mesmo_professor() * 3
+
+        pontuacao += self.rf3_priorizar_inicio_fim_livre() * 3
+
+        pontuacao += self.rf6_concentrar_disciplinas() * 2
+
+        pontuacao += self.rf4_priorizar_manha() * 1
+
+        # resta apenas a rf7
 
         print(pontuacao)
     
     # Funções Booleanas para Fitness Funtion
-                    
-    def bool_check_dias_livres(self): # RR 4
+    
+    # Restrições Rígidas
+
+    def rr4_check_dias_livres(self): # RR 4
 
         bloqueados = self.professor.getHorarios_Bloqueados()
 
@@ -150,7 +179,7 @@ class Horario:
 
         return True
     
-    def bool_dias_concentrados(self): # RR 5
+    def rr5_dias_concentrados(self): # RR 5
 
         if not self.professor.getDias_concentrados():
             return True
@@ -164,7 +193,7 @@ class Horario:
 
         return True
     
-    def bool_check_turnos_bloqueados(self): # RR 6
+    def rr6_check_turnos_bloqueados(self): # RR 6
 
         bloqueados = self.professor.getHorarios_Bloqueados()
 
@@ -175,7 +204,50 @@ class Horario:
 
         return True
     
-    def bool_limite_aulas(self): # RR 10
+    def rr7_horas_livres(self): # RR 7
+        return self.check_horas_livres_minimas()
+    
+    def rr8_salas_ocupadas(self): # RR 8
+
+        ocupacoes = set()
+
+        for dia in DIAS:
+            for turno in TURNOS:
+                for slot in TURNOS[turno]:
+
+                    aula = self.grade[dia][turno][slot]
+
+                    if aula is None:
+                        continue
+
+                    chave = (aula.sala.num_sala, dia, turno, slot)
+
+                    if chave in ocupacoes:
+                        return False
+
+                    ocupacoes.add(chave)
+
+        return True
+
+    def rr9_labs_tecnicos(self): # RR 9
+
+        for dia in DIAS:
+            for turno in TURNOS:
+                for slot in TURNOS[turno]:
+
+                    aula = self.grade[dia][turno][slot]
+
+                    if aula is None:
+                        continue
+
+                    if aula.disciplina.e_tecnica:
+
+                        if not aula.sala.laboratorio:
+                            return False
+
+        return True
+    
+    def rr10_limite_aulas(self): # RR 10
 
         for dia in DIAS:
 
@@ -184,7 +256,8 @@ class Horario:
 
         return True
     
-    def bool_check_noite_manha(self): # RR 11
+    def rr11_check_noite_manha(self): # RR 11
+
         for dia in DIAS:
             for turno in TURNOS:
                 for slot in TURNOS[turno]:
@@ -194,7 +267,231 @@ class Horario:
                     if self.check_noite_manha(dia_atual, turno, slot):
                         return False
                     
-                return True
+        return True
+
+    # Restrições Flexíveis
+
+    def rf1_quatro_aulas_seguidas(self):
+
+        penalidade = 0
+
+        for dia in DIAS:
+
+            sequencia = 0
+            ultima_turma = None
+
+            ordem = [
+                ("M", "AB"),
+                ("M", "CD"),
+                ("T", "AB"),
+                ("T", "CD"),
+            ]
+
+            for turno, slot in ordem:
+
+                aula = self.grade[dia][turno][slot]
+
+                if aula is None:
+                    sequencia = 0
+                    ultima_turma = None
+                    continue
+
+                if turno == "N":
+                    continue
+
+                turma_atual = aula.turma.cod
+
+                if turma_atual == ultima_turma:
+                    sequencia += 1
+                else:
+                    sequencia = 1
+                    ultima_turma = turma_atual
+
+                if sequencia >= 2:
+                    penalidade += 5
+
+        return penalidade
+
+    def rf2_mesma_turma_mesmo_professor(self):
+
+        penalidade = 0
+
+        for dia in DIAS:
+
+            contador_turmas = {}
+
+            for turno in ["M", "T"]: 
+
+                for slot in TURNOS[turno]:
+
+                    aula = self.grade[dia][turno][slot]
+
+                    if aula is None:
+                        continue
+
+                    turma = aula.turma.cod
+
+                    if turma not in contador_turmas:
+                        contador_turmas[turma] = 0
+
+                    contador_turmas[turma] += 1
+
+            # verifica excesso
+            for turma in contador_turmas:
+
+                # 2 slots = 4 aulas/horas
+                if contador_turmas[turma] >= 2:
+                    penalidade += 1
+
+        return penalidade
+    
+    def rf3_priorizar_inicio_fim_livre(self):
+
+        penalidade = 0
+
+        # apenas manhã e tarde
+        ordem = [
+            ("M", "AB"),
+            ("M", "CD"),
+            ("T", "AB"),
+            ("T", "CD"),
+        ]
+
+        turmas = set()
+
+        # pega todas as turmas existentes
+        for dia in DIAS:
+            for turno in ["M", "T"]:
+                for slot in TURNOS[turno]:
+
+                    aula = self.grade[dia][turno][slot]
+
+                    if aula is not None:
+                        turmas.add(aula.turma.cod)
+
+        # analisa cada turma
+        for turma in turmas:
+
+            for dia in DIAS:
+
+                ocupados = []
+
+                for turno, slot in ordem:
+
+                    aula = self.grade[dia][turno][slot]
+
+                    if aula is not None and aula.turma.cod == turma:
+                        ocupados.append(True)
+                    else:
+                        ocupados.append(False)
+
+                primeira = -1
+                ultima = -1
+
+                for i in range(len(ocupados)):
+
+                    if ocupados[i]:
+
+                        if primeira == -1:
+                            primeira = i
+
+                        ultima = i
+
+                # menos de duas aulas
+                if primeira == -1 or primeira == ultima:
+                    continue
+
+                # conta buracos internos
+                for i in range(primeira, ultima + 1):
+
+                    if not ocupados[i]:
+                        penalidade += 1
+
+        return penalidade
+    
+    def rf4_priorizar_manha(self):
+
+        penalidade = 0
+
+        for dia in DIAS:
+
+            for slot in TURNOS["T"]:
+
+                aula = self.grade[dia]["T"][slot]
+
+                if aula is not None:
+
+                    penalidade +=1
+
+        return penalidade
+
+    def rf5_evitar_janelas(self):
+
+        penalidade = 0
+
+        ordem = [
+            ("M", "AB"),
+            ("M", "CD"),
+            ("T", "AB"),
+            ("T", "CD"),
+            ("N", "AB"),
+            ("N", "CD"),
+        ]
+
+        for dia in DIAS:
+
+            ocupados = []
+
+            for turno, slot in ordem:
+
+                aula = self.grade[dia][turno][slot]
+
+                ocupados.append(aula is not None)
+
+            for i in range(1, len(ocupados)-1):
+
+                if ocupados[i-1] and not ocupados[i] and ocupados[i+1]:
+                    penalidade += 3
+
+        return penalidade
+    
+    def rf6_concentrar_disciplinas(self):
+
+        penalidade = 0
+
+        salas_por_disciplina = {}
+
+        for dia in DIAS:
+            for turno in TURNOS:
+                for slot in TURNOS[turno]:
+
+                    aula = self.grade[dia][turno][slot]
+
+                    if aula is None:
+                        continue
+
+                    disciplina = aula.disciplina.cod
+                    sala = aula.sala.num_sala
+
+                    if disciplina not in salas_por_disciplina:
+                        salas_por_disciplina[disciplina] = set()
+
+                    salas_por_disciplina[disciplina].add(sala)
+
+        for disciplina in salas_por_disciplina:
+
+            quantidade_salas = len(
+                salas_por_disciplina[disciplina]
+            )
+
+            if quantidade_salas > 1:
+
+                penalidade += (
+                    quantidade_salas - 1
+                )
+
+        return penalidade
+
 
     # Funções Auxiliares:
 
@@ -306,7 +603,7 @@ class Horario:
         for turno in TURNOS:
             for slot in TURNOS[turno]:
                 if self.grade[dia][turno][slot] is not None:
-                    total += 2  # cada slot vale 2 aulas
+                    total += 2
 
         return total
     
