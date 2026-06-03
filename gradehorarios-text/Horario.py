@@ -95,7 +95,7 @@ class Horario:
                     continue
 
                 # limite de aulas
-                if self.check_aulas_no_dia(dia) >= 6:
+                if self.check_horas_no_dia(dia) >= 6:
                     continue
 
                 # dias concentrados
@@ -121,44 +121,54 @@ class Horario:
     
     def funcao_fitness(self):
         
+        peso_rr = 10
+
+        peso_rf1 = 5
+        peso_rf2 = 3
+        peso_rf3 = 3
+        peso_rf4 = 1
+        peso_rf5 = 4
+        peso_rf6 = 2
+        peso_rf7 = 1
+
         pontuacao = 0
         
         # Restrições Rígidas:
 
         if not self.rr4_check_dias_livres():
-            pontuacao += 10
+            pontuacao += peso_rr
 
         if not self.rr5_dias_concentrados():   
-            pontuacao += 10
+            pontuacao += peso_rr
 
         if not self.rr7_horas_livres():
-            pontuacao += 10
+            pontuacao += peso_rr
 
         if not self.rr8_salas_ocupadas():
-            pontuacao += 10
+            pontuacao += peso_rr
 
         if not self.rr9_labs_tecnicos():
-            pontuacao += 10
+            pontuacao += peso_rr
 
         if not self.rr10_limite_aulas():
-            pontuacao += 10
+            pontuacao += peso_rr
 
         if not self.rr11_check_noite_manha():
-            pontuacao += 10
+            pontuacao += peso_rr
 
         # Restrições Flexíveis:
 
-        pontuacao += self.rf1_quatro_aulas_seguidas() * 5
+        pontuacao += self.rf1_quatro_aulas_seguidas() * peso_rf1
 
-        pontuacao += self.rf5_evitar_janelas() * 4
+        pontuacao += self.rf5_evitar_janelas() * peso_rf5
 
-        pontuacao += self.rf2_mesma_turma_mesmo_professor() * 3
+        pontuacao += self.rf2_mesma_turma_mesmo_professor() * peso_rf2
 
-        pontuacao += self.rf3_priorizar_inicio_fim_livre() * 3
+        pontuacao += self.rf3_priorizar_inicio_fim_livre() * peso_rf3
 
-        pontuacao += self.rf6_concentrar_disciplinas() * 2
+        pontuacao += self.rf6_concentrar_disciplinas() * peso_rf6
 
-        pontuacao += self.rf4_priorizar_manha() * 1
+        pontuacao += self.rf4_priorizar_manha() * peso_rf4
 
         # resta apenas a rf7
 
@@ -251,7 +261,7 @@ class Horario:
 
         for dia in DIAS:
 
-            if self.check_aulas_no_dia(dia) > 6:
+            if self.check_horas_no_dia(dia) > 6:
                 return False
 
         return True
@@ -308,7 +318,7 @@ class Horario:
                     ultima_turma = turma_atual
 
                 if sequencia >= 2:
-                    penalidade += 5
+                    penalidade += 1
 
         return penalidade
 
@@ -318,9 +328,9 @@ class Horario:
 
         for dia in DIAS:
 
-            contador_turmas = {}
+            contador = {}
 
-            for turno in ["M", "T"]: 
+            for turno in ["M", "T"]:
 
                 for slot in TURNOS[turno]:
 
@@ -329,18 +339,21 @@ class Horario:
                     if aula is None:
                         continue
 
-                    turma = aula.turma.cod
+                    chave = (
+                        aula.turma.cod,
+                        aula.disciplina.cod
+                    )
 
-                    if turma not in contador_turmas:
-                        contador_turmas[turma] = 0
+                    if chave not in contador:
+                        contador[chave] = 0
 
-                    contador_turmas[turma] += 1
+                    contador[chave] += 1
 
             # verifica excesso
-            for turma in contador_turmas:
+            for chave in contador:
 
-                # 2 slots = 4 aulas/horas
-                if contador_turmas[turma] >= 2:
+                # 2 slots = 4 horas
+                if contador[chave] >= 2:
                     penalidade += 1
 
         return penalidade
@@ -451,7 +464,7 @@ class Horario:
             for i in range(1, len(ocupados)-1):
 
                 if ocupados[i-1] and not ocupados[i] and ocupados[i+1]:
-                    penalidade += 3
+                    penalidade += 1
 
         return penalidade
     
@@ -597,7 +610,7 @@ class Horario:
                     return True
         return False
     
-    def check_aulas_no_dia(self, dia):
+    def check_horas_no_dia(self, dia):
         total = 0
 
         for turno in TURNOS:
